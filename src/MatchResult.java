@@ -5,7 +5,8 @@ import java.io.IOException;
 
 public class MatchResult
 {
-
+    private static String lastCard;
+    private static double lastScore;
     private DescContainer result;
     private double score;
 
@@ -67,6 +68,11 @@ public class MatchResult
     @Override
     public String toString()
     {
+        if(lastCard != result.getName()) {
+            System.out.println("|CARD| " + result.getName() + " : " + score);
+            lastScore = score;
+            lastCard = result.getName();
+        }
         return result.getName() + " : " + score;
     }
 

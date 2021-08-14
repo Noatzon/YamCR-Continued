@@ -71,6 +71,7 @@ public class RecogApp extends JFrame implements KeyListener
         select = new SetLoadPanel(strat);
         scroll.setViewportView(select);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setPreferredSize(new Dimension(320, canvas.getHeight()));
         add(canvas, BorderLayout.CENTER);
         add(right, BorderLayout.EAST);
         add(task, BorderLayout.SOUTH);

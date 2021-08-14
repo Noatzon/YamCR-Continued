@@ -93,6 +93,13 @@ public class PopoutCardWindow extends JFrame implements ActionListener
                     try
                     {
                         card = MTGCardQuery.getCardByScryfallId(dc.getScryfallId());
+
+                        System.out.println(cardName);
+                        System.out.println(card.getName());
+                        if(!cardName.equals(card.getName())) {
+                            System.out.println("|CARD| " + cardName);
+                        }
+
                         cardId = card.getScryfallUUID().toString();
                         boolean found = false;
                         if (card.isMultifaced())
@@ -112,6 +119,8 @@ public class PopoutCardWindow extends JFrame implements ActionListener
                             cardName = card.getName();
                             img = card.getImage();
                         }
+
+
                     } catch (IOException e)
                     {
                         e.printStackTrace();

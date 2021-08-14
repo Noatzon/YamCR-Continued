@@ -35,6 +35,7 @@ public class SetLoadPanel extends JPanel implements MouseInputListener
     {
         super();
         setLayout(new GridLayout(0, 1));
+
         strat = st;
 
         root = new DefaultMutableTreeNode("root");
@@ -107,6 +108,8 @@ public class SetLoadPanel extends JPanel implements MouseInputListener
         {
             this.getRootPane().validate();
         }
+
+        loadSelected(true);
     }
 
     private DefaultMutableTreeNode buildSetSubtree()
@@ -198,6 +201,78 @@ public class SetLoadPanel extends JPanel implements MouseInputListener
                     }
                 }
             }
+        }
+
+        Counter c = new Counter();
+        final OperationBar bar = RecogApp.INSTANCE.getOpBar();
+        if (bar.setTask("Loading Sets", toLoad.size() + 1))
+        {
+            for (final SetSelectNode node : toLoad)
+            {
+                new Thread()
+                {
+                    public void run()
+                    {
+                        try
+                        {
+                            synchronized (strat)
+                            {
+                                strat.addFromFile(node.getFilePath());
+                                synchronized (c)
+                                {
+                                    c.count += 1;
+                                    bar.progressTask();
+                                    if (c.count == toLoad.size())
+                                    {
+                                        strat.finalizeLoad();
+                                        bar.progressTask();
+                                    }
+                                }
+                            }
+                            node.setLoaded(true);
+                            tree.repaint();
+                        } catch (Exception e1)
+                        {
+                            e1.printStackTrace();
+                            node.setLoaded(false);
+                            bar.progressTask();
+                        }
+                    }
+                }.start();
+
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void loadSelected(boolean all)
+    {
+        DefaultMutableTreeNode selected = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+        if(all) {
+            selected = (DefaultMutableTreeNode) tree.getModel().getRoot();
+        }
+        ArrayList<SetSelectNode> toLoad = new ArrayList<SetSelectNode>();
+
+        if (selected != null)
+        {
+            Enumeration<TreeNode> nodes = selected.breadthFirstEnumeration();
+
+            while (nodes.hasMoreElements())
+            {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodes.nextElement();
+                if (node instanceof SetSelectNode)
+                {
+                    SetSelectNode snode = (SetSelectNode) node;
+                    if (snode.fileExists() && !snode.isLoaded())
+                    {
+                        toLoad.add(snode);
+                    }
+                }
+            }
+        }
+
+        if(toLoad.size() == 0) {
+            return;
         }
 
         Counter c = new Counter();

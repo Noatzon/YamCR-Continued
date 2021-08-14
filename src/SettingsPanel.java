@@ -24,7 +24,7 @@ public class SettingsPanel extends JPanel
 
         setLayout(new FlowLayout());
         setBorder(new EmptyBorder(5, 5, 5, 5));
-        setPreferredSize(new Dimension(700, 280));
+        setPreferredSize(new Dimension(700, 600));
 
         JCheckBox recog = new JCheckBox("Only trigger recognition manually", !RECOG_EVERY_FRAME);
         recog.setToolTipText("Only trigger recognition manually");
