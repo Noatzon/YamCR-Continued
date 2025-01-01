@@ -47,7 +47,7 @@ IP webcams should each be an object in the array and specify ```"push"``` or ```
 To recognize cards on the webcam feed, the program must process the features of each card.
 This process requires an internet connection to [Scryfall's](https://scryfall.com) API,
 as well as a fair amount of processing time. Note that set generation will pause card recognition
-while it runs.
+while it runs. Please be aware that the initial set generation may take hours! Leave the program running in the background, it hasn't frozen or crashed - it just takes time.
 
 To generate sets in bulk, press the ```Bulk Generate Sets``` button on the sidebar of the program window.
 A popup will display, giving a selection of the types of sets
