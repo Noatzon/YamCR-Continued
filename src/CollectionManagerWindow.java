@@ -9,7 +9,7 @@ class CollectionManagerWindow extends JFrame
     private static final long serialVersionUID = 1L;
 
     private JTable leftTable;
-    private CollectionData leftData = new CollectionData(false);
+    private CollectionData leftData = new CollectionData(true);
     private JTable rightTable;
     private CollectionData rightData = new CollectionData(true);
     private JFileChooser fileChooser;
