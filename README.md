@@ -10,7 +10,7 @@ It's partially written as a pet project, and partially as a tool with features t
 
 ## Setup
 
-Extract the contents of the zip from the [release page](https://github.com/ForOhForError/Yet-Another-Magic-Card-Recognizer/releases/latest) to any directory on your machine.
+Extract the contents of the zip from the [release page]([https://github.com/Noatzon/Yet-Another-Magic-Card-Recognizer/releases/latest]) to any directory on your machine.
 
 Run the program by opening the file ```YamCR.jar``` with a Java runtime (version 8+). Windows users may use ```run.bat``` instead.
 
