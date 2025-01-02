@@ -1,3 +1,8 @@
+
+import boofcv.factory.feature.detect.line.ConfigLineRansac;
+import boofcv.struct.image.GrayS16;
+import boofcv.struct.image.GrayU8;
+import org.ddogleg.fitting.modelset.ransac.Ransac;
 import boofcv.abst.feature.detect.line.DetectLineSegment;
 import boofcv.abst.feature.detect.line.DetectLineSegmentsGridRansac;
 import boofcv.abst.filter.derivative.ImageGradient;
@@ -8,18 +13,13 @@ import boofcv.alg.feature.detect.line.gridline.GridLineModelDistance;
 import boofcv.alg.feature.detect.line.gridline.GridLineModelFitter;
 import boofcv.alg.feature.detect.line.gridline.ImplGridRansacLineDetector_S16;
 import boofcv.alg.filter.blur.GBlurImageOps;
-import boofcv.factory.feature.detect.line.ConfigLineRansac;
 import boofcv.factory.filter.derivative.FactoryDerivative;
 import boofcv.io.image.ConvertBufferedImage;
-import boofcv.struct.image.GrayS16;
-import boofcv.struct.image.GrayU8;
 import georegression.fitting.line.ModelManagerLinePolar2D_F32;
 import georegression.struct.line.LinePolar2D_F32;
 import georegression.struct.line.LineSegment2D_F32;
 import georegression.struct.point.Point2D_F32;
 import georegression.struct.point.Point2D_I32;
-import org.ddogleg.fitting.modelset.ModelMatcher;
-import org.ddogleg.fitting.modelset.ransac.Ransac;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -89,7 +89,7 @@ public class RadiusAreaStrat extends AreaRecognitionStrategy
 
             if (configChanged)
             {
-                detector = this.lineRansac(config, 60, 2);
+                detector = this.lineRansac(config);
                 configChanged = false;
             }
             frameSegments.addAll(detector.detect(blurred));
@@ -504,11 +504,11 @@ public class RadiusAreaStrat extends AreaRecognitionStrategy
      * Derived from the BoofCV factory source code, but exposes
      * the RANSAC iterations and the max lines per grid region
      */
-    private DetectLineSegmentsGridRansac<GrayU8, GrayS16> lineRansac(ConfigLineRansac config, int maxIter, int maxLines)
-    {
 
-        if (config == null)
+    private DetectLineSegmentsGridRansac<GrayU8, GrayS16> lineRansac(ConfigLineRansac config) {
+        if (config == null) {
             config = new ConfigLineRansac();
+        }
 
         ImageGradient<GrayU8, GrayS16> gradient = FactoryDerivative.sobel(GrayU8.class, GrayS16.class);
 
@@ -516,12 +516,17 @@ public class RadiusAreaStrat extends AreaRecognitionStrategy
         GridLineModelDistance distance = new GridLineModelDistance((float) config.thresholdAngle);
         GridLineModelFitter fitter = new GridLineModelFitter((float) config.thresholdAngle);
 
-        ModelMatcher<LinePolar2D_F32, Edgel> matcher =
-                new Ransac<>(123123, manager, fitter, distance, maxIter, 0.25);
+        // Adjusted initialization of Ransac
+        Ransac<LinePolar2D_F32, Edgel> ransac = new Ransac<>(
+                123123L,
+                60,
+                0.25,
+                manager,
+                Edgel.class
+        );
 
         GridRansacLineDetector<GrayS16> alg =
-                (GridRansacLineDetector) new ImplGridRansacLineDetector_S16(config.regionSize, maxLines, matcher);
-
+                new ImplGridRansacLineDetector_S16(config.regionSize, 2, ransac);
 
         ConnectLinesGrid connect = null;
         if (config.connectLines)
